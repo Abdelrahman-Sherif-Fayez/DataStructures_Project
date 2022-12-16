@@ -1,28 +1,6 @@
 with open("sample.xml","r") as file:
     content = file.readlines()
     User_num = 0
-    # Follower_num = 0
-    # Post_num = 0
-    # Topic_num = 0
-    #
-    for i, x in enumerate(content):
-        if(x.find("user")>=0 and x[(x.find("user"))-1]!='/' and x[(x.find("user"))+4]!='s'):
-            User_num=User_num+1
-    #     elif (x.find("follower") >= 0 and x[(x.find("follower"))-1]!='/'and x[(x.find("follower"))+8]!='s'):
-    #         Follower_num=Follower_num+1
-    #     elif (x.find("post") >= 0 and x[(x.find("post"))-1]!='/'and x[(x.find("post"))+4]!='s'):
-    #         Post_num=Post_num+ 1
-    #     elif (x.find("topic") >= 0 and x[(x.find("topic"))-1]!='/'and x[(x.find("topic"))+4]!='s'):
-    #         Topic_num=Topic_num+ 1
-    #
-    # print (User_num)
-
-    # topic_flag = False
-    # topic_flag2 = False
-    # topics_flag = False
-    # post_flag = False
-    # post_flag2 = False
-    # posts_flag= False
     BodyIsOpened = False
     PostIsOpen = False
     Open_Until_Posts_Close_me = False
