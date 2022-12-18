@@ -13,6 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PrettifyWIP import Prettifyfunction, clearSpacing
 from Minify import Minify
 from PyQt5.QtWidgets import QFileDialog
+from Json import Json
 
 
 class Ui_MainWindow(object):
@@ -42,6 +43,7 @@ class Ui_MainWindow(object):
         self.JSONBtn = QtWidgets.QPushButton(self.centralwidget)
         self.JSONBtn.setGeometry(QtCore.QRect(10, 290, 75, 23))
         self.JSONBtn.setObjectName("pushButton_6")
+        self.JSONBtn.clicked.connect(self.toJson)
         self.ValidateBtn = QtWidgets.QPushButton(self.centralwidget)
         self.ValidateBtn.setGeometry(QtCore.QRect(10, 90, 75, 23))
         self.ValidateBtn.setObjectName("pushButton_7")
@@ -112,6 +114,10 @@ class Ui_MainWindow(object):
             with open(filename[0], 'w') as file:
                 Data = self.MainTextField.toPlainText()
                 file.write(Data)
+
+    def toJson(self):
+        if(self.Path != ""):
+            self.MainTextField.setText(str(Json(self.Path[0])))
 
 
 if __name__ == "__main__":
