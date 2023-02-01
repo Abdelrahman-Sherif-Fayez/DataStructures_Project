@@ -6,10 +6,11 @@ def mark_errors (lines:str):
      self.row = row
      self.column = column 
  class mistake :
-   def __init__(self,type,row,column):
+   def __init__(self,type,row,column,name):
       self.type = type # type maybe absent closed tag (true) or absent opened tag (false)
       self.row = row
       self.column = column
+      self.name = name
      
  def top_tag (mylist):
    myList = mylist.copy() #shallow copy
@@ -19,8 +20,8 @@ def mark_errors (lines:str):
    newtag = tag(str,row,column)
    tags.append(newtag)
 
- def add_mistake(str,row,column):
-   new_mistake = mistake(str,row,column)
+ def add_mistake(str,row,column,name):
+   new_mistake = mistake(str,row,column,name)
    mistakes.append(new_mistake)
 
  mistakes = []
@@ -46,7 +47,7 @@ def mark_errors (lines:str):
                              if (s.name == top_tag(tagsCopied).name): # there exist an opening tag without its closed one
                                  is_closed_tag = True
                                  while (count > 1):
-                                     add_mistake(is_closed_tag,top_tag(tags).row,top_tag(tags).column)
+                                     add_mistake(is_closed_tag,top_tag(tags).row,top_tag(tags).column,top_tag(tags).name)
                                      tags.pop()
                                      count=count -1
                                  tags.pop()
@@ -55,9 +56,9 @@ def mark_errors (lines:str):
                                  count +=1 
                                  tagsCopied.pop()
                          if(is_closed_tag == False): #that mean there is an absent open tag
-                             add_mistake(is_closed_tag,row,column)
+                             add_mistake(is_closed_tag,row,column,s.name)
                  else:
-                    add_mistake(False,row,s.column-1)
+                    add_mistake(False,row,s.column-1,s.name)
              else:
                  column +=1
                  n = lines[row].index(">",column,len(lines[row])) 
@@ -68,6 +69,67 @@ def mark_errors (lines:str):
      row+=1 
  n = tags.__len__()
  while(n>0):
-     add_mistake(True,tags[n-1].row,tags[n-1].column)
+     add_mistake(True,tags[n-1].row,tags[n-1].column,tags[n-1].name)
      n-=1
  return mistakes
+
+def Correct_Errors(lines:str):
+ mistakes=mark_errors(lines)
+ if (not mistakes.__len__()):
+     print("there are not any errors")
+ else:
+    i= mistakes.__len__()-1
+    while(i>=0):
+     if(mistakes[i].type == True):
+         string = "</"+ mistakes[i].name +">\n"
+         if(mistakes[i].name == "id" or mistakes[i].name == "name"):
+              n = lines[mistakes[i].row].index("\n",mistakes[i].column,len(lines[mistakes[i].row])) 
+              lines[mistakes[i].row]=lines[mistakes[i].row][0:n].join(['',string]) #to delete the \n signature
+              del mistakes[i] 
+         elif(mistakes[i].name == "users"):
+              lines.insert(len(lines),string)
+              del mistakes[i] 
+         else:
+            temp_row = (mistakes[i].row)+1
+            while(temp_row < len(lines)):
+             if(lines[temp_row][mistakes[i].column-1] != " "): #determining where the closed tag must be put
+                 lines.insert(temp_row,(mistakes[i].column-1)*" "+string)
+                 del mistakes[i] 
+                 break
+             temp_row+=1
+     else:
+          string = "<"+ mistakes[i].name +">"
+          if(mistakes[i].name == "id" or mistakes[i].name == "name"):
+             str1=lines[mistakes[i].row].lstrip()
+             string = string+str1
+             del lines[mistakes[i].row]
+             counter=0 # to determine where i should put the new line : start column
+             while(lines[mistakes[i].row][counter] == " "):
+                 counter+=1
+             if(mistakes[i].name == "id"):
+                 lines.insert(mistakes[i].row,(counter+1)*" "+string)
+                 print(counter)
+             elif(mistakes[i].name == "name"):
+                 lines.insert(mistakes[i].row,(counter)*" "+string)
+             del mistakes[i]
+          elif(mistakes[i].name == "users"):
+             if(lines[0][0] != "\n"):
+                 string += "\n"
+             lines.insert(0,string)
+             del mistakes[i]
+          else:
+             temp_row = (mistakes[i].row)-1
+             string +="\n"
+             while(temp_row>=0):
+                 if(lines[temp_row][0]== "\n"):
+                     temp_row-=1
+                     continue
+                 if(lines[temp_row][mistakes[i].column-1] !=" "):
+                      lines.insert(temp_row+1,(mistakes[i].column-2)*" " + string)
+                      break
+                 temp_row-=1
+             del mistakes[i]    
+     i-=1 
+ if (not mistakes.__len__()):
+     return lines
+     
