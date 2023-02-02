@@ -1,7 +1,6 @@
 ourlist = []
-ourdict = dict()
 
-with open("C:\\Users\Mohamed Gad\\Downloads\\sample.xml","r") as file:
+with open("sample.xml","r") as file:
     content = file.readlines()
     for i,x in enumerate(content):
 
@@ -15,44 +14,81 @@ with open("C:\\Users\Mohamed Gad\\Downloads\\sample.xml","r") as file:
             exact_id = sub_string[sub_string.find(">")+1 :  sub_string.find("<")]
             ourlist.append(int(exact_id))
 
-for i in range(len(ourlist)-2):
-    if(ourlist[i]==-1):
-        ourdict[ourlist[i+1]] = list()
-    else: 
-        continue
-    j = i + 2 
-    while j < len(ourlist) and ourlist[j]!= -1 :
-        (ourdict[ourlist[i+1]]).append(ourlist[j])
-        j+=1
+def users_dictionary(ourlist):
+    ourdict = dict()
+    for i in range(len(ourlist)-2):
+        if(ourlist[i]==-1):
+            ourdict[ourlist[i+1]] = list()
+        else: 
+            continue
+        j = i + 2 
+        while j < len(ourlist) and ourlist[j]!= -1 :
+            (ourdict[ourlist[i+1]]).append(ourlist[j])
+            j+=1
+    return ourdict
 
-# print(ourdict)
-val_dict = dict()
+def most_influencer_user(ourdict):
+    val_dict = dict()
+    for inner_list in ourdict.values():
+        for val in inner_list:
+            if val_dict.get(val) is not None:
+                val_dict[val] += 1 
+            else :
+                val_dict[val] = 1
 
-for lnner_list in ourdict.values():
-    for val in lnner_list:
-        if val_dict.get(val) is not None:
-            val_dict[val] += 1 
-        else :
-            val_dict[val] = 1
-
-greatest = -1
-ans = -6
-for key, val in val_dict.items():
-    if val_dict[key] > greatest:
-        greatest = val_dict[key]
-        ans = key
-    
-
-print (ans)
-
-    
-
-
-
-    
-    
+    greatest = -1
+    mostInfluencerId = -6
+    for key, val in val_dict.items():
+        if val_dict[key] > greatest:
+            greatest = val_dict[key]
+            mostInfluencerId = key
         
+    return mostInfluencerId
 
+def most_active_user(ourdict):
+    #Dictionary to know list length for each user 
+    val_dict = dict()
+    for id, inner_list in ourdict.items():
+        val_dict[id] = len(inner_list)
+
+    greatest = -1
+    mostActiveId = -6
+    for key, val in val_dict.items():
+        if val_dict[key] > greatest:
+            greatest = val_dict[key]
+            mostActiveId = key
         
+    return mostActiveId
 
-    
+def mutual(id1,id2,ourdict):
+    mutual_friends = []
+    id1_list = ourdict.get(id1)
+    id2_list = ourdict.get(id2)
+
+    for id1 in id1_list:
+        for id2 in id2_list:
+            if(id1 == id2):
+                mutual_friends.append(id1)
+    return mutual_friends
+
+def suggestedFollowers(ourdict):
+    #Dictionary to know suggested list of users to follow for each user 
+    suggested_users_dict = dict()
+    for id, inner_list in ourdict.items():
+        userList =[]
+        for val in inner_list:
+            userList.extend(ourdict.get(val))
+        userList = list(set(userList))
+        for val in inner_list:
+             if val in userList:
+                userList.remove(val)
+        if id in userList:
+                userList.remove(id)
+        suggested_users_dict[id] = userList
+    return suggested_users_dict
+
+# ourdict = users_dictionary(ourlist)
+# print(most_influencer_user(ourdict))
+# print(suggestedFollowers(ourdict))
+# print(mutual(4, 5, ourdict))
+# print(most_active_user(ourdict))
