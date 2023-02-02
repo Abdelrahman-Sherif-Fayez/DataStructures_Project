@@ -13,7 +13,7 @@ from bitarray import bitarray
 from compression import HuffmanDecoding, HuffmanEncoding
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PrettifyWIP import Prettifyfunction, clearSpacing
-from Minify import Minify
+from minify import Minify
 from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat, QTextCursor
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtCore import QRegExp
