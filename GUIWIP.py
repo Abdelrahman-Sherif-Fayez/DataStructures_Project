@@ -17,7 +17,7 @@ from minify import Minify
 from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat, QTextCursor
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtCore import QRegExp
-from to_JSON import to_Json
+from Completion_of_JSON import Json
 from PyQt5.QtWidgets import *
 
 
