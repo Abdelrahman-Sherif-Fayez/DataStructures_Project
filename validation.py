@@ -80,24 +80,32 @@ def Correct_Errors(lines:str):
  else:
     i= mistakes.__len__()-1
     while(i>=0):
-     if(mistakes[i].type == True):
+     if(mistakes[i].type == True): # correction for absent closing tags
          string = "</"+ mistakes[i].name +">\n"
          if(mistakes[i].name == "id" or mistakes[i].name == "name"):
               n = lines[mistakes[i].row].index("\n",mistakes[i].column,len(lines[mistakes[i].row])) 
               lines[mistakes[i].row]=lines[mistakes[i].row][0:n].join(['',string]) #to delete the \n signature
               del mistakes[i] 
          elif(mistakes[i].name == "users"):
-              lines.insert(len(lines),string)
-              del mistakes[i] 
+            if(lines[len(lines)-1][0]=="\n"):
+                 del lines[len(lines)-1]
+                 lines[len(lines)-1]=string
+            else:
+                 lines.insert(len(lines),"\n")
+                 lines.insert(len(lines),string)
+            del mistakes[i] 
          else:
             temp_row = (mistakes[i].row)+1
             while(temp_row < len(lines)):
+             if(lines[temp_row][0]=="\n"):
+                 del lines[temp_row]
+                 continue
              if(lines[temp_row][mistakes[i].column-1] != " "): #determining where the closed tag must be put
                  lines.insert(temp_row,(mistakes[i].column-1)*" "+string)
                  del mistakes[i] 
                  break
              temp_row+=1
-     else:
+     else: #correction for abset openning tags
           string = "<"+ mistakes[i].name +">"
           if(mistakes[i].name == "id" or mistakes[i].name == "name"):
              str1=lines[mistakes[i].row].lstrip()
@@ -107,8 +115,7 @@ def Correct_Errors(lines:str):
              while(lines[mistakes[i].row][counter] == " "):
                  counter+=1
              if(mistakes[i].name == "id"):
-                 lines.insert(mistakes[i].row,(counter+1)*" "+string)
-                 print(counter)
+                 lines.insert(mistakes[i].row,(counter)*" "+string)
              elif(mistakes[i].name == "name"):
                  lines.insert(mistakes[i].row,(counter)*" "+string)
              del mistakes[i]
@@ -122,7 +129,7 @@ def Correct_Errors(lines:str):
              string +="\n"
              while(temp_row>=0):
                  if(lines[temp_row][0]== "\n"):
-                     temp_row-=1
+                     del lines[temp_row]
                      continue
                  if(lines[temp_row][mistakes[i].column-1] !=" "):
                       lines.insert(temp_row+1,(mistakes[i].column-2)*" " + string)
