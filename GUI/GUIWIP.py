@@ -143,24 +143,6 @@ class Ui_MainWindow(QWidget):
             self.Path = FileField  # Set the current path as the File location
             with open(FileField[0], encoding="Latin-1") as file:
                 lines = file.readlines()
-                mistakes = mark_errors(lines)
-                n = mistakes.__len__()
-                mistakeslist = []
-                mistakestype = []
-                while(n != 0):
-                    mistakeslist.append(mistakes[n-1].row+1)
-                    mistakestype.append(mistakes[n-1].type)
-                    n -= 1
-                for i in range(len(mistakeslist)):
-                    lines[mistakeslist[i]-1] = lines[mistakeslist[i]-1].rstrip()
-                    lines[mistakeslist[i] -
-                          1] = lines[mistakeslist[i]-1] + "xxxxxxxxx"
-                    if mistakestype[i] == True:
-                        lines[mistakeslist[i]-1] = lines[mistakeslist[i] -
-                                                         1] + " Absent Closed Tag" + "\n"
-                    if mistakestype[i] == False:
-                        lines[mistakeslist[i]-1] = lines[mistakeslist[i] -
-                                                         1] + " Absent Opened Tag" + "\n"
                 self.MainTextField.setText(''.join(lines))
 
     def Restore(self):  # restore the opened file to it's original state
@@ -193,7 +175,25 @@ class Ui_MainWindow(QWidget):
         if(self.Path != ""):
             with open(self.Path[0]) as file:
                 lines = file.readlines()
-                linesl = Correct_Errors(lines)
+                linesl = lines[:]
+                mistakes = mark_errors(lines)
+                n = mistakes.__len__()
+                mistakeslist = []
+                mistakestype = []
+                while(n != 0):
+                    mistakeslist.append(mistakes[n-1].row+1)
+                    mistakestype.append(mistakes[n-1].type)
+                    n -= 1
+                for i in range(len(mistakeslist)):
+                    lines[mistakeslist[i]-1] = lines[mistakeslist[i]-1].rstrip()
+                    lines[mistakeslist[i] -
+                          1] = lines[mistakeslist[i]-1] + "xxxxxxxxx"
+                    if mistakestype[i] == True:
+                        lines[mistakeslist[i]-1] = lines[mistakeslist[i] -1] + " Absent Closed Tag" + "\n"
+                    if mistakestype[i] == False:
+                        lines[mistakeslist[i]-1] = lines[mistakeslist[i] -1] + " Absent Opened Tag" + "\n"
+                self.MainTextField.setText(' '.join(lines))
+                linesl = Correct_Errors(linesl)
                 self.ResultField.setText(' '.join(linesl))
 
     def HuffmanEnc(self):
