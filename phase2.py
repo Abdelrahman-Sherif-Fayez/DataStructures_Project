@@ -1,18 +1,18 @@
-ourlist = []
+def getlist(path):
+    with open(path) as file:
+        content = file.readlines()
+        ourlist = []
+        for i,x in enumerate(content):
+            t_user = x.find("user")
+            t_id = x.find("id")
+            if ( t_user>=0 and x[t_user-1]!='/' and x[t_user+4]!='s' ):        
+                ourlist.append(-1)
 
-with open("sample.xml","r") as file:
-    content = file.readlines()
-    for i,x in enumerate(content):
-
-        t_user = x.find("user")
-        t_id = x.find("id")
-        if ( t_user>=0 and x[t_user-1]!='/' and x[t_user+4]!='s' ):        
-           ourlist.append(-1)
-
-        elif(t_id >=0 and x[t_id-1]!='/'and x[t_id+2]=='>' ):
-            sub_string = x[t_id : ]
-            exact_id = sub_string[sub_string.find(">")+1 :  sub_string.find("<")]
-            ourlist.append(int(exact_id))
+            elif(t_id >=0 and x[t_id-1]!='/'and x[t_id+2]=='>' ):
+                sub_string = x[t_id : ]
+                exact_id = sub_string[sub_string.find(">")+1 :  sub_string.find("<")]
+                ourlist.append(int(exact_id))
+    return ourlist
 
 def users_dictionary(ourlist):
     ourdict = dict()
@@ -87,8 +87,8 @@ def suggestedFollowers(ourdict):
         suggested_users_dict[id] = userList
     return suggested_users_dict
 
-# ourdict = users_dictionary(ourlist)
-# print(most_influencer_user(ourdict))
-# print(suggestedFollowers(ourdict))
-# print(mutual(4, 5, ourdict))
-# print(most_active_user(ourdict))
+# print(ourdict)
+#print(most_influencer_user(ourdict))
+#print(suggestedFollowers(ourdict))
+#print(mutual(4, 5, ourdict))
+#print(most_active_user(ourdict))
